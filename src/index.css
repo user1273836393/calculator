@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+    :root {
+        /* Neumorphic Base Colors */
+        --background: 210 15% 92%;
+        --foreground: 215 25% 27%;
+
+        --card: 210 15% 92%;
+        --card-foreground: 215 25% 27%;
+
+        --popover: 210 15% 92%;
+        --popover-foreground: 215 25% 27%;
+
+        /* Accent - Teal/Cyan for interactive elements */
+        --primary: 180 65% 45%;
+        --primary-foreground: 0 0% 100%;
+
+        --secondary: 210 15% 88%;
+        --secondary-foreground: 215 25% 27%;
+
+        --muted: 210 15% 88%;
+        --muted-foreground: 215 20% 50%;
+
+        --accent: 180 65% 45%;
+        --accent-foreground: 0 0% 100%;
+
+        --destructive: 0 70% 50%;
+        --destructive-foreground: 0 0% 100%;
+
+        --border: 210 15% 82%;
+        --input: 210 15% 88%;
+        --ring: 180 65% 45%;
+
+        --radius: 1rem;
+
+        /* Neumorphic Shadows */
+        --shadow-light: 0 0% 100%;
+        --shadow-dark: 210 20% 68%;
+
+        /* Custom design tokens */
+        --neu-shadow: 8px 8px 16px hsl(var(--shadow-dark)), -8px -8px 16px hsl(var(--shadow-light));
+        --neu-shadow-inset: inset 4px 4px 8px hsl(var(--shadow-dark)), inset -4px -4px 8px hsl(var(--shadow-light));
+        --neu-shadow-pressed: inset 6px 6px 12px hsl(var(--shadow-dark)), inset -6px -6px 12px hsl(var(--shadow-light));
+
+        --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+        --sidebar-background: 0 0% 98%;
+        --sidebar-foreground: 240 5.3% 26.1%;
+        --sidebar-primary: 240 5.9% 10%;
+        --sidebar-primary-foreground: 0 0% 98%;
+        --sidebar-accent: 240 4.8% 95.9%;
+        --sidebar-accent-foreground: 240 5.9% 10%;
+        --sidebar-border: 220 13% 91%;
+        --sidebar-ring: 217.2 91.2% 59.8%;
+    }
+
+    .dark {
+        /* Dark Neumorphic Theme */
+        --background: 215 25% 15%;
+        --foreground: 210 15% 92%;
+
+        --card: 215 25% 15%;
+        --card-foreground: 210 15% 92%;
+
+        --popover: 215 25% 15%;
+        --popover-foreground: 210 15% 92%;
+
+        --primary: 180 65% 50%;
+        --primary-foreground: 0 0% 100%;
+
+        --secondary: 215 20% 20%;
+        --secondary-foreground: 210 15% 92%;
+
+        --muted: 215 20% 20%;
+        --muted-foreground: 215 15% 70%;
+
+        --accent: 180 65% 50%;
+        --accent-foreground: 0 0% 100%;
+
+        --destructive: 0 70% 50%;
+        --destructive-foreground: 0 0% 100%;
+
+        --border: 215 20% 25%;
+        --input: 215 20% 20%;
+        --ring: 180 65% 50%;
+
+        /* Dark Neumorphic Shadows */
+        --shadow-light: 215 25% 20%;
+        --shadow-dark: 215 30% 10%;
+
+        --neu-shadow: 8px 8px 16px hsl(var(--shadow-dark)), -8px -8px 16px hsl(var(--shadow-light));
+        --neu-shadow-inset: inset 4px 4px 8px hsl(var(--shadow-dark)), inset -4px -4px 8px hsl(var(--shadow-light));
+        --neu-shadow-pressed: inset 6px 6px 12px hsl(var(--shadow-dark)), inset -6px -6px 12px hsl(var(--shadow-light));
+
+        --sidebar-background: 240 5.9% 10%;
+        --sidebar-foreground: 240 4.8% 95.9%;
+        --sidebar-primary: 224.3 76.3% 48%;
+        --sidebar-primary-foreground: 0 0% 100%;
+        --sidebar-accent: 240 3.7% 15.9%;
+        --sidebar-accent-foreground: 240 4.8% 95.9%;
+        --sidebar-border: 240 3.7% 15.9%;
+        --sidebar-ring: 217.2 91.2% 59.8%;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+/* Neumorphic Utility Classes */
+@layer utilities {
+    .neu-button {
+        @apply rounded-2xl bg-background transition-all duration-300;
+        box-shadow: var(--neu-shadow);
+    }
+
+    .neu-button:active {
+        box-shadow: var(--neu-shadow-pressed);
+    }
+
+    .neu-card {
+        @apply rounded-3xl bg-background;
+        box-shadow: var(--neu-shadow);
+    }
+
+    .neu-inset {
+        @apply rounded-2xl bg-background;
+        box-shadow: var(--neu-shadow-inset);
+    }
+
+    .neu-pressed {
+        box-shadow: var(--neu-shadow-pressed);
+    }
+}
