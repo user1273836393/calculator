@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://user1273836393.github.io/smart-calculator",
+  "homepage": "https://user1273836393.github.io/calculator",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
