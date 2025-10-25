@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
-import { Delete, History, Sun, Moon } from "lucide-react";
+import { Delete, History, Sun, Moon, Settings, DollarSign, Ruler, Wrench } from "lucide-react";
 
 const Calculator = () => {
   const [display, setDisplay] = useState("0");
   const [equation, setEquation] = useState("");
-  const [isScientific, setIsScientific] = useState(false);
+  type TabType = 'basic' | 'scientific' | 'convert' | 'tools' | 'finance' | 'settings';
+  const [activeTab, setActiveTab] = useState<TabType>('basic');
   const [history, setHistory] = useState<string[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const isScientific = activeTab === 'scientific';
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" || "light";
@@ -23,10 +25,166 @@ const Calculator = () => {
     document.documentElement.classList.toggle("dark", newTheme === "dark");
   };
 
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'basic':
+      case 'scientific':
+        return (
+          <>
+            {activeTab === 'scientific' && (
+              <div className="grid grid-cols-4 gap-3 mb-4">
+                {scientificButtons.flat().map((btn) => (
+                  <button
+                    key={btn}
+                    onClick={() => handleScientific(btn === "√" ? "sqrt" : btn === "x²" ? "square" : btn === "π" ? "pi" : btn)}
+                    className="neu-button p-4 font-medium text-primary hover:scale-105 transition-transform"
+                  >
+                    {btn}
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className="grid grid-cols-4 gap-3">
+              {basicButtons.flat().map((btn) => (
+                <button
+                  key={btn}
+                  onClick={() => {
+                    if (btn === "=") handleEquals();
+                    else if (["+", "-", "×", "÷"].includes(btn)) handleOperator(btn);
+                    else handleNumber(btn);
+                  }}
+                  className={`neu-button p-6 text-xl font-semibold hover:scale-105 transition-all ${
+                    btn === "=" ? "text-primary" : ["+", "-", "×", "÷"].includes(btn) ? "text-accent" : "text-foreground"
+                  }`}
+                >
+                  {btn}
+                </button>
+              ))}
+            </div>
+          </>
+        );
+      case 'convert':
+        return (
+          <div className="p-4">
+            <h3 className="text-lg font-semibold mb-4">Unit Conversion</h3>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">From</label>
+                  <select className="w-full p-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600">
+                    <option>Meters</option>
+                    <option>Feet</option>
+                    <option>Inches</option>
+                    <option>Centimeters</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">To</label>
+                  <select className="w-full p-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600">
+                    <option>Feet</option>
+                    <option>Meters</option>
+                    <option>Inches</option>
+                    <option>Centimeters</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Value</label>
+                <input
+                  type="number"
+                  className="w-full p-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
+                  placeholder="Enter value"
+                />
+              </div>
+              <button className="w-full bg-primary text-white p-3 rounded-lg hover:bg-primary/90">
+                Convert
+              </button>
+            </div>
+          </div>
+        );
+      case 'tools':
+        return (
+          <div className="p-4">
+            <h3 className="text-lg font-semibold mb-4">Tools</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <button className="p-4 rounded-xl neu-button text-center">
+                <div className="text-2xl mb-1">📅</div>
+                <div>Date Calc</div>
+              </button>
+              <button className="p-4 rounded-xl neu-button text-center">
+                <div className="text-2xl mb-1">💲</div>
+                <div>Tip Calc</div>
+              </button>
+              <button className="p-4 rounded-xl neu-button text-center">
+                <div className="text-2xl mb-1">📏</div>
+                <div>Length</div>
+              </button>
+              <button className="p-4 rounded-xl neu-button text-center">
+                <div className="text-2xl mb-1">⚖️</div>
+                <div>Weight</div>
+              </button>
+            </div>
+          </div>
+        );
+      case 'finance':
+        return (
+          <div className="p-4">
+            <h3 className="text-lg font-semibold mb-4">Financial Tools</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Principal Amount</label>
+                <input type="number" className="w-full p-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Interest Rate (%)</label>
+                <input type="number" className="w-full p-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Time (years)</label>
+                <input type="number" className="w-full p-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600" />
+              </div>
+              <button className="w-full bg-primary text-white p-3 rounded-lg hover:bg-primary/90">
+                Calculate Interest
+              </button>
+            </div>
+          </div>
+        );
+      case 'settings':
+        return (
+          <div className="p-4">
+            <h3 className="text-lg font-semibold mb-4">Settings</h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span>Dark Mode</span>
+                <button
+                  onClick={toggleTheme}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${theme === 'dark' ? 'bg-primary' : 'bg-gray-200'}`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${theme === 'dark' ? 'translate-x-6' : 'translate-x-1'}`}
+                  />
+                </button>
+              </div>
+              <div className="pt-4 border-t">
+                <h4 className="font-medium mb-2">About</h4>
+                <p className="text-sm text-muted-foreground">
+                  Smart Calculator v1.0.0
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+    }
+  };
+
   const handleNumber = (num: string) => {
     if (display === "0" || display === "Error") {
       setDisplay(num);
-      setEquation(num);
+      if (equation === "" || display === "Error") {
+        setEquation(num);
+      } else {
+        setEquation(equation + num);
+      }
     } else {
       setDisplay(display + num);
       setEquation(equation + num);
@@ -54,14 +212,7 @@ const Calculator = () => {
 
   const handleEquals = () => {
     try {
-      // Replace operators for safe evaluation
-      const sanitizedEquation = equation
-        .replace(/×/g, "*")
-        .replace(/÷/g, "/")
-        .replace(/[^0-9+\-*/().\s]/g, ""); // Remove any unsafe characters
-
-      // Use Function constructor instead of eval for safer evaluation
-      const result = new Function('"use strict"; return (' + sanitizedEquation + ')')();
+      const result = eval(equation.replace(/×/g, "*").replace(/÷/g, "/"));
       const resultStr = result.toString();
       setDisplay(resultStr);
 
@@ -203,38 +354,43 @@ const Calculator = () => {
         </div>
       </div>
 
-      {/* Mode Toggle */}
-      <div className="flex gap-2 mb-4">
-        <button
-          onClick={() => setIsScientific(false)}
-          className={`flex-1 py-3 rounded-xl font-medium transition-all ${!isScientific ? "neu-pressed text-primary" : "neu-button text-muted-foreground"
-            }`}
-        >
-          Basic
-        </button>
-        <button
-          onClick={() => setIsScientific(true)}
-          className={`flex-1 py-3 rounded-xl font-medium transition-all ${isScientific ? "neu-pressed text-primary" : "neu-button text-muted-foreground"
-            }`}
-        >
-          Scientific
-        </button>
+      {/* Tabs */}
+      <div className="flex border-b border-gray-200 dark:border-gray-700 mb-4">
+        {(['basic', 'scientific', 'convert', 'tools', 'finance', 'settings'] as TabType[]).map((tab) => {
+          const icons = {
+            basic: '123',
+            scientific: 'f(x)',
+            convert: <Ruler size={20} />,
+            tools: <Wrench size={20} />,
+            finance: <DollarSign size={20} />,
+            settings: <Settings size={20} />
+          };
+          
+          return (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`flex-1 py-3 px-2 text-center font-medium transition-colors ${
+                activeTab === tab 
+                  ? 'text-primary border-b-2 border-primary' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {typeof icons[tab] === 'string' ? (
+                <span>{icons[tab]}</span>
+              ) : (
+                <span className="inline-block">{icons[tab]}</span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Scientific Buttons */}
-      {isScientific && (
-        <div className="grid grid-cols-4 gap-3 mb-4">
-          {scientificButtons.flat().map((btn) => (
-            <button
-              key={btn}
-              onClick={() => handleScientific(btn === "√" ? "sqrt" : btn === "x²" ? "square" : btn === "π" ? "pi" : btn)}
-              className="neu-button p-4 font-medium text-primary hover:scale-105 transition-transform"
-            >
-              {btn}
-            </button>
-          ))}
-        </div>
-      )}
+      {/* Tab Content */}
+      <div className="mb-4">
+        {renderTabContent()}
+      </div>
+
 
       {/* Basic Buttons */}
       <div className="grid grid-cols-4 gap-3 mb-4">
